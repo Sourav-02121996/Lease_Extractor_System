@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", sans-serif;
+  background-color: #f9fafb;
+  color: #0a0a0a;
+}
+
+.font-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: #0a0a0a;
+  color: #ffffff;
+}
+
+/* Slim, technical scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 6px;
+  border: 2px solid #f9fafb;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
