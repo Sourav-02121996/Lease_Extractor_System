@@ -1,0 +1,133 @@
+{
+  "theme": "Light",
+  "archetype": "4 (Swiss & High-Contrast)",
+  "rationale": "Lease Abstraction Assistant requires an authoritative, clutter-free, task-first interface. A high-contrast Swiss approach ensures dense legal and financial data is scannable without visual fatigue. Functional color coding (red for missing, yellow for review) is used exclusively for status, avoiding decorative chart junk.",
+  "colors": {
+    "background": {
+      "default": "#FFFFFF",
+      "subtle": "#F9FAFB",
+      "muted": "#F3F4F6"
+    },
+    "text": {
+      "primary": "#0A0A0A",
+      "secondary": "#4B5563",
+      "tertiary": "#9CA3AF",
+      "inverse": "#FFFFFF"
+    },
+    "border": {
+      "default": "#E5E7EB",
+      "strong": "#D1D5DB",
+      "focus": "#0A0A0A"
+    },
+    "primary": {
+      "main": "#0A0A0A",
+      "hover": "#27272A"
+    },
+    "status": {
+      "extracted": {
+        "bg": "#ECFDF5",
+        "text": "#065F46",
+        "border": "#A7F3D0"
+      },
+      "approved": {
+        "bg": "#F0FDF4",
+        "text": "#166534",
+        "border": "#BBF7D0"
+      },
+      "needs_review": {
+        "bg": "#FEF3C7",
+        "text": "#92400E",
+        "border": "#FDE68A"
+      },
+      "missing": {
+        "bg": "#FEF2F2",
+        "text": "#991B1B",
+        "border": "#FECACA"
+      },
+      "failed": {
+        "bg": "#FEE2E2",
+        "text": "#991B1B",
+        "border": "#FECACA"
+      }
+    }
+  },
+  "typography": {
+    "font_family": {
+      "headings": "Chivo, sans-serif",
+      "body": "IBM Plex Sans, sans-serif",
+      "mono": "IBM Plex Mono, monospace"
+    },
+    "scale": {
+      "h1": "text-3xl sm:text-4xl tracking-tight font-bold text-[#0A0A0A]",
+      "h2": "text-2xl sm:text-3xl tracking-tight font-semibold text-[#0A0A0A]",
+      "h3": "text-xl sm:text-2xl tracking-tight font-medium text-[#0A0A0A]",
+      "h4": "text-lg sm:text-xl tracking-tight font-medium text-[#0A0A0A]",
+      "body": "text-sm sm:text-base leading-relaxed text-[#4B5563]",
+      "small": "text-xs sm:text-sm text-[#4B5563]",
+      "overline": "text-xs font-semibold uppercase tracking-[0.15em] text-[#9CA3AF]"
+    },
+    "rules": [
+      "No Inter for headings. Use Chivo for sharp, authoritative headers.",
+      "Use tabular figures for numbers to align columns cleanly in extraction tables.",
+      "Keep type scale compact to allow dense data presentation."
+    ]
+  },
+  "spacing_and_layout": {
+    "philosophy": "Overview first, details on demand. Strong grid discipline.",
+    "page_layout": "Sidebar navigation (w-64) on the left, main content area taking the rest. Header minimal and sticky.",
+    "dashboard_grid": "Mode B: 'Control Room' Grid. grid-cols-1 md:grid-cols-4 gap-4 or gap-6 for summary cards.",
+    "spacing_scale": {
+      "section_padding": "p-8 md:p-12",
+      "card_padding": "p-6",
+      "table_cell": "px-4 py-3"
+    },
+    "rules": [
+      "Whitespace must be generous on page margins but tight within tables and grid cells.",
+      "Containers with borders MUST have p-6 or p-8 internal padding.",
+      "Use optical alignment for icons next to text."
+    ]
+  },
+  "components": {
+    "strategy": "Shadcn/UI components heavily customized for a flat, technical look. No rounded bubbles.",
+    "cards": "Flat background (bg-white), 1px subtle border (border-gray-200), max rounded-md (4px-6px). NO heavy drop shadows. Use shadow-sm only.",
+    "buttons": "Square or rounded-sm. Solid black for primary CTA (Approve, Export), outline or ghost for secondary (Save Draft).",
+    "tables": "Dense rows. Border-collapse. Subtle borders on row bottoms. Hover state on rows (bg-gray-50).",
+    "badges": "Flat background with colored border and text. Small text (text-xs font-medium).",
+    "forms": "Inputs use square or 4px radius. 1px solid border. Focus state must be a sharp black ring (ring-black).",
+    "panels": "Needs Review panel should stick to the right side or be a prominent top banner with a pale yellow background.",
+    "confidence_indicator": "Small horizontal bar next to a percentage text, or just colored text (Green for >90, Yellow for 70-89, Red for <70)."
+  },
+  "motion": {
+    "rules": [
+      "No unnecessary animations. Minimalist micro-interactions only.",
+      "Hover states on buttons and table rows must transition quickly (duration-150).",
+      "Do not animate dashboard mounting or chart loading. Keep it instant and professional."
+    ]
+  },
+  "media_urls": {
+    "logo_placeholder": {
+      "url": "https://images.unsplash.com/photo-1527576539890-dfa815648363?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2MzR8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwYnVpbGRpbmclMjBhcmNoaXRlY3R1cmUlMjBsb2dvJTIwYmxhY2slMjBhbmQlMjB3aGl0ZXxlbnwwfHx8fDE3ODAxNzI0NDV8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Minimalist architectural building in black and white, to be used as the app logo icon or sidebar brand mark."
+    },
+    "upload_empty_state": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/b01ca92c-a37b-47ed-afd7-b8fb8fdc356b/images/6d4c55b8a76fedb9c61fa5afb836f84ec95af66e51c916d0593f3db45129e3fd.png",
+      "description": "Ultra-minimalist architectural blueprint texture to be used as a subtle background for the PDF drag-and-drop upload zone."
+    },
+    "dashboard_texture": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/b01ca92c-a37b-47ed-afd7-b8fb8fdc356b/images/46c4dbd5a191db3b53aa1a38fd104d652ae4934c0fce5e8e478045db73b2cf62.png",
+      "description": "Abstract geometric grid, useful for section backgrounds or header visual interest if needed."
+    }
+  },
+  "instructions_to_main_agent": [
+    "Implement the UI using a fixed sidebar navigation layout and a top header containing breadcrumbs or document context.",
+    "Use Phosphor Icons (@phosphor-icons/react) or lucide-react for crisp, technical icons.",
+    "Ensure all interactive elements have data-testid attributes.",
+    "For the document review page, structure the 10 fields into the 4 requested sections (Parties, Contact & Address, Lease Dates, Options & Terms) using Shadcn Accordion or clean separated cards.",
+    "Evidence snippets must be distinctly styled (e.g., italicized with a left border or inside a muted gray block) so they are distinguishable from the extracted value input.",
+    "Seed the application with realistic sample real estate lease data (at least 5-6 documents in history).",
+    "Include a 'Needs Review' panel that aggregates all fields with status needs_review, missing, or failed.",
+    "Warning banners for OCR/extraction failure should be prominent at the top of the review page using a red or amber color scheme.",
+    "Only use Shadcn UI components for dropdowns, dialogues, and form fields. Do not build custom HTML interactions.",
+    "Ensure the confidence score is displayed clearly on each field row."
+  ]
+}
