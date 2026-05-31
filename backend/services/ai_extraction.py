@@ -1,6 +1,6 @@
 """Modular AI extraction layer.
 
-Active provider: Gemini (via Emergent LLM key / emergentintegrations).
+Active provider: Gemini (via Google's official google-genai SDK).
 Future provider: Claude (Anthropic) — placeholder ready, same JSON schema.
 
 Select provider with AI_PROVIDER env var ("gemini" by default).
@@ -10,13 +10,12 @@ import json
 import logging
 import os
 import re
-import uuid
 
 from fields import FIELD_NAMES, NOT_FOUND_EVIDENCE
 
 logger = logging.getLogger("ai_extraction")
 
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3-flash-preview")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
 
 MAX_TEXT_CHARS = 30000  # keep prompt within sane bounds
 
@@ -87,20 +86,23 @@ def _failed_payload(reason: str) -> dict:
 
 
 async def _gemini_extract(lease_text: str) -> dict:
-    api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("EMERGENT_LLM_KEY")
+    api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         raise RuntimeError("Gemini API key is not configured.")
 
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    from google import genai
+    from google.genai import types
 
-    chat = LlmChat(
-        api_key=api_key,
-        session_id=f"lease-{uuid.uuid4()}",
-        system_message=SYSTEM_PROMPT,
-    ).with_model("gemini", GEMINI_MODEL)
-
-    response = await chat.send_message(UserMessage(text=_build_prompt(lease_text)))
-    return _parse_response(str(response), provider="gemini", text_len=len(lease_text))
+    client = genai.Client(api_key=api_key)
+    response = await client.aio.models.generate_content(
+        model=GEMINI_MODEL,
+        contents=_build_prompt(lease_text),
+        config=types.GenerateContentConfig(
+            system_instruction=SYSTEM_PROMPT,
+            response_mime_type="application/json",
+        ),
+    )
+    return _parse_response(response.text or "", provider="gemini", text_len=len(lease_text))
 
 
 async def _claude_extract(lease_text: str) -> dict:
@@ -113,20 +115,8 @@ async def _claude_extract(lease_text: str) -> dict:
       - use the SAME JSON schema as Gemini
     Gemini remains the active provider for now.
     """
-    api_key = os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("EMERGENT_LLM_KEY")
-    if not api_key:
-        raise RuntimeError("Anthropic/Claude API key is not configured.")
-
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
-
-    chat = LlmChat(
-        api_key=api_key,
-        session_id=f"lease-{uuid.uuid4()}",
-        system_message=SYSTEM_PROMPT,
-    ).with_model("anthropic", "claude-sonnet-4-6")
-
-    response = await chat.send_message(UserMessage(text=_build_prompt(lease_text)))
-    return _parse_response(str(response), provider="claude", text_len=len(lease_text))
+    del lease_text
+    raise RuntimeError("Claude extraction is not implemented.")
 
 
 def _parse_response(raw: str, provider: str, text_len: int) -> dict:

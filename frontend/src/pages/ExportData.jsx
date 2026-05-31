@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Download, FileSpreadsheet, CheckCircle2, Inbox } from "lucide-react";
 import { Card, Button } from "../components/ui";
-import { getApprovedCount, exportUrl } from "../lib/api";
+import { getApprovedCount, exportExcelUrl, exportUrl } from "../lib/api";
 
 const COLUMNS = [
   "File Name",
@@ -22,6 +22,7 @@ const COLUMNS = [
 
 export default function ExportData() {
   const [count, setCount] = useState(null);
+  const [format, setFormat] = useState("csv");
 
   useEffect(() => {
     getApprovedCount()
@@ -30,6 +31,9 @@ export default function ExportData() {
   }, []);
 
   const hasApproved = count > 0;
+  const isExcel = format === "excel";
+  const selectedExportUrl = isExcel ? exportExcelUrl : exportUrl;
+  const formatLabel = isExcel ? "Excel" : "CSV";
 
   return (
     <div className="app-fade-in space-y-8">
@@ -41,7 +45,7 @@ export default function ExportData() {
           Export Data
         </h2>
         <p className="mt-2 text-sm text-[#4B5563]">
-          Download approved lease abstraction records as a CSV file (one row per approved
+          Download approved lease abstraction records as a CSV or Excel file (one row per approved
           document).
         </p>
       </div>
@@ -54,7 +58,7 @@ export default function ExportData() {
             </div>
             <div>
               <p className="font-heading text-lg font-semibold text-ink">
-                Approved Lease CSV
+                Approved Lease Export
               </p>
               <p className="mt-1 text-sm text-[#4B5563]" data-testid="approved-count-label">
                 {count === null
@@ -66,17 +70,32 @@ export default function ExportData() {
             </div>
           </div>
 
-          {hasApproved ? (
-            <a href={exportUrl} download data-testid="download-csv-link">
-              <Button data-testid="download-csv-btn">
-                <Download size={16} /> Download Approved Lease CSV
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <label className="sr-only" htmlFor="export-format">
+              Export format
+            </label>
+            <select
+              id="export-format"
+              value={format}
+              onChange={(event) => setFormat(event.target.value)}
+              className="rounded-sm border border-line bg-white px-3 py-2 text-sm text-ink"
+              data-testid="export-format-select"
+            >
+              <option value="csv">CSV (.csv)</option>
+              <option value="excel">Excel (.xlsx)</option>
+            </select>
+            {hasApproved ? (
+              <a href={selectedExportUrl} download data-testid="download-export-link">
+                <Button data-testid="download-export-btn">
+                  <Download size={16} /> Download Approved Lease {formatLabel}
+                </Button>
+              </a>
+            ) : (
+              <Button disabled data-testid="download-export-btn">
+                <Download size={16} /> Download Approved Lease {formatLabel}
               </Button>
-            </a>
-          ) : (
-            <Button disabled data-testid="download-csv-btn">
-              <Download size={16} /> Download Approved Lease CSV
-            </Button>
-          )}
+            )}
+          </div>
         </div>
 
         {!hasApproved && count !== null && (
@@ -94,7 +113,7 @@ export default function ExportData() {
       {/* Column reference */}
       <Card className="p-6">
         <p className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[#9CA3AF]">
-          <CheckCircle2 size={14} /> CSV Columns
+          <CheckCircle2 size={14} /> Export Columns
         </p>
         <div className="flex flex-wrap gap-2">
           {COLUMNS.map((c) => (

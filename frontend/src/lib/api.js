@@ -23,5 +23,6 @@ export const getApprovedCount = () =>
   client.get("/export/approved/count").then((r) => r.data);
 
 export const exportUrl = `${API}/export/approved`;
+export const exportExcelUrl = `${API}/export/approved/excel`;
 
 export default client;

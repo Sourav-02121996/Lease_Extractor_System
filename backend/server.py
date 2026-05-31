@@ -36,7 +36,5 @@ async def health():
     return {
         "status": "ok",
         "ai_provider": os.environ.get("AI_PROVIDER", "gemini"),
-        "ai_key_configured": bool(
-            os.environ.get("GEMINI_API_KEY") or os.environ.get("EMERGENT_LLM_KEY")
-        ),
+        "ai_key_configured": bool(os.environ.get("GEMINI_API_KEY")),
     }

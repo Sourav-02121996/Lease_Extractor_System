@@ -2,7 +2,7 @@
 
 An internal web app for a real estate company to **upload lease PDFs, extract the core lease
 abstraction fields with AI (Gemini), review & correct the results, approve the final record, and
-export approved records as CSV.**
+export approved records as CSV or Excel.**
 
 ---
 
@@ -14,7 +14,7 @@ export approved records as CSV.**
    **10 Phase 1 lease fields**.
 4. A human reviewer verifies/corrects every field in an editable, grouped table.
 5. The reviewer **saves a draft** or **approves** the record.
-6. **Approved records only** can be exported as a CSV (one row per document).
+6. **Approved records only** can be exported as CSV or Excel (one row per document).
 
 ### The 10 Phase 1 fields
 | # | Field | Section |
@@ -39,7 +39,7 @@ export approved records as CSV.**
 - **Document Review** — metadata, summary, warning banners, editable extraction table grouped
   into 4 sections, a **Needs Review** panel, and action buttons (Save Draft, Approve Record,
   Back to History, Export Approved Data).
-- **Export Data** — `Download Approved Lease CSV`.
+- **Export Data** — download approved lease records as CSV or Excel.
 
 ---
 
@@ -56,11 +56,12 @@ backend/
   routes/
     upload.py               POST /api/upload
     documents.py            list / stats / get / draft / approve
-    export.py               GET /api/export/approved (CSV)
+    export.py               GET /api/export/approved (CSV) and /excel (XLSX)
   services/
     extraction.py           pdfplumber text extraction + OCR fallback (modular)
     ai_extraction.py        Gemini (active) + Claude placeholder (modular)
-    csv_export.py           builds the 14-column CSV
+    csv_export.py           builds the shared 14-column export rows and CSV
+    excel_export.py         builds the XLSX workbook
 frontend/
   src/pages/                Dashboard, History, Review, ExportData
   src/components/           Layout (sidebar+header), ui (badges/buttons/etc.)
@@ -97,8 +98,8 @@ sudo supervisorctl restart backend frontend
 ```
 
 Environment variables:
-- `backend/.env`: `MONGO_URL`, `DB_NAME`, `EMERGENT_LLM_KEY`, `AI_PROVIDER=gemini`,
-  `GEMINI_MODEL`, `GEMINI_API_KEY` (optional), `ANTHROPIC_API_KEY` (future)
+- `backend/.env`: `MONGO_URL`, `DB_NAME`, `AI_PROVIDER=gemini`, `GEMINI_MODEL`,
+  `GEMINI_API_KEY`, `ANTHROPIC_API_KEY` (future)
 - `frontend/.env`: `REACT_APP_BACKEND_URL`
 
 ---
@@ -110,7 +111,7 @@ Environment variables:
    Missing fields are **blank** with confidence `0` — the app never invents values.
 3. **Save Draft** stores your corrections; **Approve Record** locks the record (read-only) and
    marks it `approved`.
-4. **Export Data** → `Download Approved Lease CSV`. Only approved records are included; one row
+4. **Export Data** → choose CSV or Excel and download. Only approved records are included; one row
    per document with these columns: *File Name, Upload Date, Status, Extraction Method,* and the
    10 lease fields.
 
@@ -119,7 +120,7 @@ Environment variables:
 ## How Gemini extraction works
 - All AI calls happen **in the backend only** — API keys are never exposed to the frontend.
 - `services/ai_extraction.py` builds a strict prompt and calls **Gemini Flash**
-  (`gemini-3-flash-preview`) via the Emergent integrations library.
+  (`gemini-2.5-flash`) via Google's official `google-genai` SDK.
 - Prompt rules: strict JSON only, no markdown, no guessing/inventing, use only the lease text,
   include short evidence snippets, and mark unfound fields as `missing`.
 - Response is validated against the required schema. If Gemini returns invalid JSON or fails, the
@@ -131,9 +132,10 @@ Set it in `backend/.env`:
 ```
 GEMINI_API_KEY=your-key-here
 AI_PROVIDER=gemini
+GEMINI_MODEL=gemini-2.5-flash
 ```
-If `GEMINI_API_KEY` is empty, the app falls back to the configured `EMERGENT_LLM_KEY`. If neither
-is present, the backend returns a clear error: **"Gemini API key is not configured."**
+If `GEMINI_API_KEY` is empty, the backend returns a clear error:
+**"Gemini API key is not configured."**
 
 ---
 
@@ -145,8 +147,8 @@ placeholder that will:
 - send the extracted lease text and request strict JSON,
 - reuse the **same JSON schema** as Gemini.
 
-To switch providers, set `AI_PROVIDER=claude` and provide `ANTHROPIC_API_KEY`. Gemini remains the
-active provider by default — Claude is **not required** today and never blocks the app.
+Gemini remains the active provider by default. Claude extraction is not implemented yet and does
+not block the app.
 
 ---
 

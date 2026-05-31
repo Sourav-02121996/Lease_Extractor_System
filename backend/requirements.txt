@@ -6,4 +6,5 @@ pymongo==4.9.2
 pydantic==2.10.4
 python-multipart==0.0.20
 pdfplumber==0.11.4
-emergentintegrations
+google-genai==2.7.0
+openpyxl==3.1.5

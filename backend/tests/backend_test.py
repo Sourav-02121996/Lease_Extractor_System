@@ -257,6 +257,21 @@ class TestExport:
         assert "approved" in data and isinstance(data["approved"], int)
         assert data["approved"] >= 1
 
+    def test_excel_export_returns_workbook_with_14_columns(self, session):
+        r = session.get(f"{API}/export/approved/excel", timeout=30)
+        assert r.status_code == 200, r.text
+        assert "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" in r.headers.get(
+            "content-type", ""
+        )
+        from openpyxl import load_workbook
+
+        workbook = load_workbook(io.BytesIO(r.content), read_only=True)
+        worksheet = workbook.active
+        rows = list(worksheet.iter_rows(values_only=True))
+        assert len(rows) >= 2  # header + at least one approved row
+        assert len(rows[0]) == 14
+        assert len(rows[1]) == 14
+
     def test_empty_export_message_when_no_approved(self, session):
         # Mark all approved docs as needs_review temporarily, then restore.
         listing = session.get(f"{API}/documents", timeout=15).json()
