@@ -78,23 +78,36 @@ frontend/
 
 ## Running locally
 
-The app is pre-wired for the Emergent environment (supervisor-managed). Services:
+Services:
 - Backend: FastAPI on `:8001` (all routes prefixed `/api`)
 - Frontend: React (CRA) on `:3000`
 - Database: MongoDB
 
 ```bash
-# Backend deps
+# Create and activate the backend environment
+python3.13 -m venv .venv
+source .venv/bin/activate
+
+# Install backend dependencies
 pip install -r backend/requirements.txt
 
-# Frontend deps
-cd frontend && yarn install
+# Install frontend dependencies
+cd frontend
+npm install
+cd ..
 
-# Seed demo data
-cd backend && python seed.py
+# Optional: seed demo data
+cd backend
+python seed.py
 
-# Restart services (Emergent)
-sudo supervisorctl restart backend frontend
+# Start the backend
+uvicorn server:app --reload --port 8001
+```
+
+In a second terminal:
+```bash
+cd frontend
+npm start
 ```
 
 Environment variables:
