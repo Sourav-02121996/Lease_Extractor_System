@@ -8,7 +8,7 @@ from processing import process_and_store
 from serializers import serialize_doc
 
 logger = logging.getLogger("upload")
-router = APIRouter(prefix="/api", tags=["upload"])
+router = APIRouter(tags=["upload"])
 
 
 @router.post("/upload")

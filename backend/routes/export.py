@@ -9,7 +9,7 @@ from services.csv_export import build_csv
 from services.excel_export import build_excel
 
 logger = logging.getLogger("export")
-router = APIRouter(prefix="/api", tags=["export"])
+router = APIRouter(tags=["export"])
 
 
 @router.get("/export/approved")

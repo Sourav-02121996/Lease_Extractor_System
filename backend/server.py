@@ -27,11 +27,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(upload_route.router)
-app.include_router(documents_route.router)
-app.include_router(export_route.router)
+for router in (upload_route.router, documents_route.router, export_route.router):
+    # Vercel Services strips the /api service prefix before invoking FastAPI.
+    # Keep prefixed routes too so local development continues to use /api.
+    app.include_router(router)
+    app.include_router(router, prefix="/api")
 
 
+@app.get("/health")
 @app.get("/api/health")
 async def health():
     db_connected = False

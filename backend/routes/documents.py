@@ -10,7 +10,7 @@ from db import documents
 from serializers import serialize_doc
 
 logger = logging.getLogger("documents")
-router = APIRouter(prefix="/api", tags=["documents"])
+router = APIRouter(tags=["documents"])
 
 
 class FieldUpdate(BaseModel):
