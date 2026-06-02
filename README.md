@@ -110,6 +110,21 @@ cd frontend
 npm start
 ```
 
+## Deploying on Vercel
+
+The root `vercel.json` deploys the React frontend and FastAPI backend as Vercel Services under one
+domain. The frontend uses `/api` for backend requests when `REACT_APP_BACKEND_URL` is not set.
+
+Configure these environment variables in the Vercel project:
+- `MONGO_URL`: a hosted MongoDB connection string, such as MongoDB Atlas. Do not use `localhost`.
+- `DB_NAME`: MongoDB database name.
+- `GEMINI_API_KEY`: Google Gemini API key.
+- `AI_PROVIDER=gemini`
+- `GEMINI_MODEL=gemini-2.5-flash`
+
+The local Docker MongoDB container is only available on your machine and cannot be reached by a
+Vercel deployment.
+
 Environment variables:
 - `backend/.env`: `MONGO_URL`, `DB_NAME`, `AI_PROVIDER=gemini`, `GEMINI_MODEL`,
   `GEMINI_API_KEY`, `ANTHROPIC_API_KEY` (future)
