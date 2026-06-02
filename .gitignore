@@ -6,3 +6,5 @@ credentials.json
 *.key
 .credentials
 node_modules/
+__pycache__/
+*.pyc

@@ -14,6 +14,7 @@ logging.basicConfig(level=logging.INFO)
 from routes import documents as documents_route  # noqa: E402
 from routes import export as export_route  # noqa: E402
 from routes import upload as upload_route  # noqa: E402
+from db import db  # noqa: E402
 
 app = FastAPI(title="Lease Abstraction Assistant")
 
@@ -33,8 +34,18 @@ app.include_router(export_route.router)
 
 @app.get("/api/health")
 async def health():
+    db_connected = False
+    db_error = None
+    try:
+        await db.command("ping")
+        db_connected = True
+    except Exception as exc:
+        db_error = type(exc).__name__
+
     return {
         "status": "ok",
         "ai_provider": os.environ.get("AI_PROVIDER", "gemini"),
         "ai_key_configured": bool(os.environ.get("GEMINI_API_KEY")),
+        "db_connected": db_connected,
+        "db_error": db_error,
     }
